@@ -18,6 +18,7 @@ public class Fracao {
      * @return num
      */
     public int getNumerador() {
+
         return num;
     }
 
@@ -26,6 +27,7 @@ public class Fracao {
      * @return den
      */
     public int getDenominador() {
+
         return den;
     }
 
@@ -35,6 +37,7 @@ public class Fracao {
      * @return true Se num == 0
      */
     public boolean ehZero(){
+
         return num == 0;
     }
 
@@ -43,6 +46,7 @@ public class Fracao {
      * @return true se numerador / denominador tem resto 0
      */
     public boolean ehInteira(){
+
         return (num % den) == 0;
     }
 
@@ -51,6 +55,7 @@ public class Fracao {
      * @return true se ambos o denominador e o numerador forem > 0
      */
     public boolean ehPositiva(){
+
         return (num > 0 && den > 0);
     }
 
@@ -59,13 +64,14 @@ public class Fracao {
      * @return Nova Fracao (den, num)
      */
     public Fracao inversa(){
+
         return new Fracao(den, num);
     }
 
     /**
-     *
-     * @param f
-     * @return
+     * Soma duas funcoes
+     * @param f A funcao a ser somada com
+     * @return Uma funcao resultante da soma das duas funcoes
      */
     public Fracao soma (Fracao f){
 
@@ -76,7 +82,6 @@ public class Fracao {
             Fracao b = new Fracao(f.getNumerador() * den, f.getDenominador() * den);
             return new Fracao(a.getNumerador() + b.getNumerador(), a.getDenominador());
         }
-
     }
 
     /**
@@ -95,24 +100,92 @@ public class Fracao {
      * @return
      */
     public Fracao divisao(Fracao f){
+
         return this.produto(f.inversa());
     }
 
-    //todo
+    /**
+     *
+     * @return
+     */
     public Fracao copia(){
+
         return new Fracao(num, den);
     }
 
-    //todo
+    /**
+     * Verifica se duas funcoes são equivalentes
+     * @param f a funcao a ser comparada com
+     * @return true Se as funcoes sao equivalentes
+     */
     public boolean equivalente(Fracao f){
 
-        return false;
+        return num * f.getDenominador() == den * f.getDenominador();
     }
 
-    //todo
+    /**
+     * Apresenta uma função de modo textual
+     * @return String com o texto que representa a fracao
+     */
     public String toString(){
-        return "";
+
+        Fracao temp = reduzirFracao(this);
+
+        //Se é zero... é zero... ez pz
+        if(temp.getNumerador() == 0) {
+            return "0";
+
+        //Se é numero inteiro... também ez pz
+        } else if(temp.ehInteira()) {
+            return (temp.getNumerador() / temp.getDenominador()) + "";
+
+        //Se o numerador é < 0 e o den > 0, tá chill
+        } else if (temp.getNumerador() < 0 && temp.getDenominador() > 0){
+            return temp.getNumerador() + "/" + temp.getDenominador();
+
+        //Denominador < 0, trocar os business
+        } else if (temp.getNumerador() > 0 && temp.getDenominador() < 0){
+            return temp.getNumerador() * (-1) + "/" + temp.getDenominador() * (-1);
+
+        } else if (temp.getNumerador() < 0 && temp.getDenominador() < 0){
+            return temp.getNumerador() * (-1) + "/" + temp.getDenominador() * (-1);
+        }else{
+            return temp.getNumerador() + "/" + temp.getDenominador();
+        }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( !(obj instanceof Fracao) )
+            return false;
 
+        Fracao f = (Fracao) obj;
+
+        return (this.toString() == f.toString());
+    }
+
+    /**
+     * Devolve o maior divisor comum entre a e b
+     * @param a Valor a
+     * @param b Valor b
+     * @return Maior divisor comum entre eles
+     */
+    private static int maiorDivisorComum (int a, int b) {
+
+        return b == 0 ? a : maiorDivisorComum(b, a%b);
+    }
+
+    /**
+     * Devolve uma Fracao na forma reduzida
+     * @param f Fracao a reduzir
+     * @return Fracao reduzida
+     */
+    private Fracao reduzirFracao(Fracao f){
+
+        int mdc = maiorDivisorComum(f.getNumerador(), f.getDenominador());
+
+        return new Fracao(f.getNumerador() / mdc, f.getDenominador() / mdc);
+    }
 }
